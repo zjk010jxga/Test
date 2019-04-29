@@ -1,8 +1,10 @@
 package com.example.test;
 
 import android.app.ProgressDialog;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,16 +100,16 @@ public class ChooseAreaFragment extends Fragment {
                 if (currentLevel == LEVEL_CITY){
                     queryCities();
                 }else if (currentLevel == LEVEL_CITY){
-                    queryProvince();
+                    queryProvinces();
                 }
             }
         });
-        queryProvince();
+        queryProvinces();
     }
     /**
      * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询
      */
-    private void queryProvince(){
+    private void queryProvinces(){
         titleText.setText("中国");
         backButton.setVisibility(View.GONE);
         provinceList = DataSupport.findAll(Province.class);
@@ -130,6 +132,7 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCities(){
         titleText.setText(selectedProvince.getProvinceName());
         cityList = DataSupport.where("province = ?",String.valueOf((selectedProvince.getId()))).find(City.class);
+
         if (cityList.size() > 0){
             dataList.clear();
          for(City city:cityList){
@@ -191,8 +194,11 @@ private void queryFromServer (String address, final String type) {
                     public void run() {
                         closeProgressDialog();
                         if ("province".equals(type)) {
-                            queryProvince();
-                        } else if ("county".equals(type)) {
+                            queryProvinces();
+                        } else if ("city".equals(type)){
+                            queryCities();
+                        }
+                        else if ("county".equals(type)) {
                             queryCounties();
                         }
                     }
