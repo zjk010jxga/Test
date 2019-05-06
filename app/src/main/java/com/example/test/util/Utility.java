@@ -86,6 +86,7 @@ public class Utility {
      */
     public static Weather handleWeatherResponse(String response){
         try {
+            removeBOM(response);
             JSONObject jsonObject = new JSONObject(response);
             JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
             String weatherContent = jsonArray.getJSONObject(0).toString();
@@ -95,6 +96,28 @@ public class Utility {
             e.printStackTrace();
         }
         return null;
+
+    }
+    /**
+     * 去掉BOM
+     */
+    public static final String removeBOM(String data) {
+
+        if (TextUtils.isEmpty(data)) {
+
+            return data;
+
+        }
+
+        if (data.startsWith("\ufeff")) {
+
+            return data.substring(1);
+
+        } else {
+
+            return data;
+
+        }
 
     }
 }
